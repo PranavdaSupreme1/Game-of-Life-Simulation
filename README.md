@@ -1,12 +1,14 @@
 ## Game-of-Life-Simulation
 Simulating John Conway's Game of Life using a Sparse Matrix (for a data structures mini-project)
 > What is the "Game of Life"?
+
 A zero-player game. The user is presented with a grid of cells, which can either live (1) or die (0) - the user can select some cells to be live as a _starting state_, and then based on a few mathematical rules, once "**PLAY**" is pressed, the figure the user has drawn will change:
 > RULES -
+<span style = "color: red">
 -  **Rule of Solitude**: If a live cell is alone or has one live neighbor, the cell dies.
--  **Rule of Overpopulation**: If a live cell has four or more live neighbors, the cell dies.
+-  **Rule of Overpopulation**: If a live cell has four or more live neighbors, the cell dies.</span> <span style = "color: green">
 -  **Rule of Moderation**: If the a live cell has two or three neighbors, the cell lives on.
--  **Rule of Creation**: If a dead cell has exactly thee neighbors, the cell becomes live.
+-  **Rule of Creation**: If a dead cell has exactly thee neighbors, the cell becomes live.</span>
   Based on these rules, the state of every cell in the next instant of time (next iteration) gets decided. Many figures can be formed of them.
 # Features
 1. GUI
