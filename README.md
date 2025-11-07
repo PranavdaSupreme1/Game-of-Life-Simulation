@@ -8,7 +8,8 @@ A zero-player game. The user is presented with a grid of cells, which can either
 -  **Rule of Overpopulation**: If a live cell has four or more live neighbors, the cell dies.
 -  **Rule of Moderation**: If the a live cell has two or three neighbors, the cell lives on.
 -  **Rule of Creation**: If a dead cell has exactly thee neighbors, the cell becomes live.
-  Based on these rules, the state of every cell in the next instant of time (next iteration) gets decided. Many figures can be formed of them.
+
+Based on these rules, the state of every cell in the next instant of time (next iteration) gets decided. Many figures can be formed of them.
 # Features
 1. GUI
 2. User customizability - Click on empty cells to draw, click on filled cells to erase
@@ -16,8 +17,10 @@ A zero-player game. The user is presented with a grid of cells, which can either
 4. Lexicon (preload figures)
 # Applications
 Apart from just being a fascinating mmuseum-piece, it has great practical utility:
-+ It's "Turing Complete", which means it can compute any automata which lies under the realm of computability.
-+ (add more)
++ It's **Turing Complete**, which means it can compute any automata which lies under the realm of computability.
++ Being an example of a **Cellular automaton**, it can model and predict complex data like population dynamics, epidemic spread, and ecosystem evolution.
++ It makes for a great benchmark for testing **multi-threading** in CPUs.
++ **Terrain generation** in video games.
 # Resources
 - https://youtu.be/R9Plq-D1gEk
 - https://youtu.be/CgOcEZinQ2I
