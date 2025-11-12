@@ -1,20 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define SIZE 100
-// Data Structures
-typedef struct CellNode {
-    int row;
-    int col;
-    struct CellNode *right;
-	struct CellNode *left;
-	struct CellNode *up;
-	struct CellNode *down;
-} CellNode;
-
-typedef struct {
-    CellNode *row[SIZE];
-	CellNode *col[SIZE];	// Head of a master linked list of all live cells, sorted
-} SparseGrid;
+#include "Sparse.h" // Custom header file has all function defs and structures
 
 int find(SparseGrid *grid, int row, int col,int totrows, int totcols){
 	if (col<0 || col>=totrows || row<0 || row>=totcols) return 0;
@@ -44,8 +30,6 @@ CellNode* create_cell(int row, int col){
 	return new_cell;
 }
 
-
-
 SparseGrid* add_cell(SparseGrid *grid, int row, int col,int totrows, int totcols) {
 	if (find(grid,row,col,totrows,totcols)) return grid;
     CellNode *new_cell=create_cell(row,col);
@@ -53,8 +37,9 @@ SparseGrid* add_cell(SparseGrid *grid, int row, int col,int totrows, int totcols
     CellNode *current_row=grid->row[row];
     CellNode *current_col=grid->col[col];
 
+    // FOR THE ROWS
 	CellNode *temp_row=current_row;
-	//front insertion
+	//Front insertion
 	if (temp_row==NULL) grid->row[row]=new_cell;
 	else{
 		if (temp_row->col>col){
@@ -66,7 +51,7 @@ SparseGrid* add_cell(SparseGrid *grid, int row, int col,int totrows, int totcols
 			while (temp_row->col<col && temp_row->right!=NULL){
 				temp_row=temp_row->right;
 			}
-			//back insertion
+			//Back insertion
 			if (temp_row->col<col){
 				new_cell->left=temp_row;
 				temp_row->right=new_cell;
@@ -80,7 +65,9 @@ SparseGrid* add_cell(SparseGrid *grid, int row, int col,int totrows, int totcols
 			}
 		}
 	}
+    // FOR THE COLUMNS
 	CellNode *temp_col=current_col;
+    //Front insertion
 	if (temp_col==NULL) grid->col[col]=new_cell;
 	else{
 		if (temp_col->row>row){
@@ -92,10 +79,12 @@ SparseGrid* add_cell(SparseGrid *grid, int row, int col,int totrows, int totcols
 			while (temp_col->row<row && temp_col->down!=NULL){
 				temp_col=temp_col->down;
 			}
+            //Back insertion
 			if (temp_col->row<row){
 				new_cell->up=temp_col;
 				temp_col->down=new_cell;
 			}
+            //Middle insertion
 			else{
 				new_cell->up=temp_col->up;
 				new_cell->down=temp_col;
@@ -129,8 +118,6 @@ void remove_cell(SparseGrid *grid, int row, int col) {
 	}
 }
 
-
-
 int count_neighbors(SparseGrid *grid, int row, int col, int totrows, int totcols) {
     int count;
     count=find(grid,row-1,col-1,totrows,totcols)+find(grid,row-1,col,totrows,totcols)+find(grid,row-1,col+1,totrows,totcols)+find(grid,row,col-1,totrows,totcols)+find(grid,row,col+1,totrows,totcols)+find(grid,row+1,col-1,totrows,totcols)+find(grid,row+1,col,totrows,totcols)+find(grid,row+1,col+1,totrows,totcols);
@@ -150,7 +137,6 @@ void free_grid(SparseGrid *grid, int rows, int cols) {
 	}
 	for (int j=0;j<cols;j++) grid->col[j]=NULL;
 }
-
 
 void print_grid(SparseGrid *grid, int rows, int cols) {
     for (int i = 1; i < rows; i++) {
@@ -173,23 +159,17 @@ SparseGrid* evolve_generation(SparseGrid *current_grid, int rows, int cols) {
 	int j;
     for (int i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
-			printf("%d",j);
+			//printf("%d",j);
             count = count_neighbors(current_grid, i, j,rows,cols);
             if (count == 3 || (find(current_grid, i, j,rows,cols) && count == 2)) add_cell(next_grid, i, j,rows,cols);
-			printf("%d",count);
+			//printf("%d",count);
 
         }
-		printf("\n");
+		//printf("\n");
     }
     return next_grid;
 }
-
-
-
-
-
-
-
+/*
 int main(){
 	SparseGrid *grid;
 	grid=initialize_grid(grid,5,5);
@@ -202,4 +182,5 @@ int main(){
 	new=evolve_generation(grid,5,5);
 	print_grid(new,5,5);
 	return 0;
-}
+}*/
+//Commented the main() function because with GUI, the entry point for the program should be RayGUI.c
