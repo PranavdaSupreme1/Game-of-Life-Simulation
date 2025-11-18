@@ -1,19 +1,28 @@
 //Game of Life - main file, GUI implementation
-/*TO IMPLEMENT:
-1. Changing count of rows and columns and being able to scroll
-*/
 #include "raylib.h"
 #include "Sparse.h" //Functions are used from Sparse.c - so remember to compile with that file. 
 #include <stdlib.h>
-
-//If you want to change the grid layout, here's the place.
-#define CELL_SIZE 20
-#define ROWS 50
-#define COLS 50
+#include <stdio.h>
 
 int main() {
+    //If you want to change the grid layout, here's the place.
+	int ROWS=0;
+	int COLS=0;
+    int CELL_SIZE = 20;
+	while (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) {
+        printf("Enter the number of rows (20 to 100): ");
+        scanf("%d", &ROWS);
+        printf("Enter the number of columns (20 to 100): ");
+        scanf("%d", &COLS);
+        if (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) printf("The rows and Column's can't exceed 100 and can't be bellow 20\n");
+    }
+    //In case the grid becomes too large for a 1080p screen or too small for the instructions to be visible, change cell size:
+    if (ROWS>60 || COLS>60) CELL_SIZE /= 2;
+    else if (ROWS<35 || COLS<35) CELL_SIZE *= 2;
+    
     InitWindow(COLS * CELL_SIZE, ROWS * CELL_SIZE, "Game of Life in a Sparse Matrix");
-	int speed = 10;   //This will be the fps that we can change
+    
+	int speed = 15;   //This will be the fps that we can change
     SetTargetFPS(speed); //Increase fps = more speed (+increasing speed might fix the multi-click problem)
 
     SparseGrid *grid = initialize_grid(NULL, ROWS, COLS); //"grid" will store the current state of the sparse grid at any given instance.
@@ -67,22 +76,6 @@ int main() {
                 DrawRectangle(temp->col * CELL_SIZE, temp->row * CELL_SIZE, CELL_SIZE, CELL_SIZE, BLACK);
                 temp = temp->right;
             }
-        }
-        // --- Zoom slider UI ---
-        DrawText("Zoom:", 20, ROWS * cellSize + 15, 20, DARKGRAY);
-        Rectangle slider = {90, ROWS * cellSize + 15, zoomSliderWidth, 20};
-
-        // Slider bar (manual implementation)
-        DrawRectangleRec(slider, LIGHTGRAY);
-        float knobPos = slider.x + ((zoom - zoomMin) / (zoomMax - zoomMin)) * slider.width;
-        DrawCircle(knobPos, slider.y + slider.height / 2, 8, GRAY);
-
-        // Mouse control for slider
-        if (CheckCollisionPointRec(mouse, slider) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-            float normalized = (mouse.x - slider.x) / slider.width;
-            if (normalized < 0) normalized = 0;
-            if (normalized > 1) normalized = 1;
-            zoom = zoomMin + normalized * (zoomMax - zoomMin);
         }
         //Instructions on the top right corner
         DrawText("Left click: Add cell | Right click: Remove | Space: Start/Pause", 10, 10, 20, GREEN);
