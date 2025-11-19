@@ -35,7 +35,7 @@ int main() {
         int row = mouse.y / CELL_SIZE;
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) { //Resurrect cell
-            add_cell(grid, row, col, ROWS, COLS);
+            add_cell(grid, row, col,0, ROWS, COLS);
         }
         if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) { //Kill cell
             remove_cell(grid, row, col);
