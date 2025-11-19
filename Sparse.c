@@ -3,7 +3,7 @@
 #include "Sparse.h" // Custom header file has all function defs and structures
 
 int find(SparseGrid *grid, int row, int col,int totrows, int totcols){
-	if (col<0 || col>=totrows || row<0 || row>=totcols) return 0;
+	if (row < 0 || row >= totrows || col < 0 || col >= totcols) return 0;
 	CellNode *temp=grid->col[col];
 	if (temp==NULL) return 0;
 	while (temp->down!=NULL && temp->row!=row){
@@ -96,26 +96,23 @@ SparseGrid* add_cell(SparseGrid *grid, int row, int col,int totrows, int totcols
 	return grid;
 }
 
-
 void remove_cell(SparseGrid *grid, int row, int col) {
-	if (col>=0 && col<SIZE && row>=0 && row<SIZE){
-		CellNode *temp=grid->col[col];
-		if (temp!=NULL){
-			while (temp->row!=row && temp->down!=NULL) temp=temp->down;
-			if (temp!=NULL){
-				if (temp->row==row){
-					if (temp->left==NULL) grid->row[row]=temp->right;
-					else (temp->left)->right=temp->right;
-					if (temp->right!=NULL) (temp->right)->left=temp->left;
-					if (temp->up==NULL) grid->col[col]=temp->down;
-					else (temp->up)->down=temp->down;
-					if (temp->down!=NULL) (temp->down)->up=temp->up;
-					free(temp);
-					temp=NULL;
-				}
-			}
-		}
-	}
+    CellNode *temp=grid->col[col];
+    if (temp!=NULL){
+        while (temp->row!=row && temp->down!=NULL) temp=temp->down;
+        if (temp!=NULL){
+            if (temp->row==row){
+                if (temp->left==NULL) grid->row[row]=temp->right;
+                else (temp->left)->right=temp->right;
+                if (temp->right!=NULL) (temp->right)->left=temp->left;
+                if (temp->up==NULL) grid->col[col]=temp->down;
+                else (temp->up)->down=temp->down;
+                if (temp->down!=NULL) (temp->down)->up=temp->up;
+                free(temp);
+                temp=NULL;
+            }
+        }
+    }
 }
 
 int count_neighbors(SparseGrid *grid, int row, int col, int totrows, int totcols) {
@@ -138,7 +135,19 @@ void free_grid(SparseGrid *grid, int rows, int cols) {
 	for (int j=0;j<cols;j++) grid->col[j]=NULL;
 }
 
-void print_grid(SparseGrid *grid, int rows, int cols) {
+SparseGrid* evolve_generation(SparseGrid *current_grid, int rows, int cols) {
+    SparseGrid *next_grid = initialize_grid(NULL, rows, cols);
+    int count;
+	int j;
+    for (int i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            count = count_neighbors(current_grid, i, j,rows,cols);
+            if (count == 3 || (find(current_grid, i, j,rows,cols) && count == 2)) add_cell(next_grid, i, j,rows,cols);
+        }
+    }
+    return next_grid;
+}
+/*void print_grid(SparseGrid *grid, int rows, int cols) {
     for (int i = 1; i < rows; i++) {
         CellNode *temp = grid->row[i];
         for (int j = 1; j < cols; j++) {
@@ -152,24 +161,6 @@ void print_grid(SparseGrid *grid, int rows, int cols) {
         printf("\n");
     }
 }
-
-SparseGrid* evolve_generation(SparseGrid *current_grid, int rows, int cols) {
-    SparseGrid *next_grid = initialize_grid(NULL, rows, cols);
-    int count;
-	int j;
-    for (int i = 0; i < rows; i++) {
-        for (j = 0; j < cols; j++) {
-			//printf("%d",j);
-            count = count_neighbors(current_grid, i, j,rows,cols);
-            if (count == 3 || (find(current_grid, i, j,rows,cols) && count == 2)) add_cell(next_grid, i, j,rows,cols);
-			//printf("%d",count);
-
-        }
-		//printf("\n");
-    }
-    return next_grid;
-}
-/*
 int main(){
 	SparseGrid *grid;
 	grid=initialize_grid(grid,5,5);
