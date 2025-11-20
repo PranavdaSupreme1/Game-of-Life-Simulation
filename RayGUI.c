@@ -9,12 +9,27 @@ int main() {
 	int ROWS=0;
 	int COLS=0;
     int CELL_SIZE = 20;
-	while (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) {
-        printf("Enter the number of rows (20 to 100): ");
-        scanf("%d", &ROWS);
-        printf("Enter the number of columns (20 to 100): ");
-        scanf("%d", &COLS);
-        if (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) printf("The rows and Column's can't exceed 100 and can't be bellow 20\n");
+	NODE *root;
+	int count=0;
+	root=NULL;
+    char c;
+    SparseGrid *grid;
+    printf("Wish to load a previous grid: (y/n)");
+    scanf("%c",&c);
+    printf("%c",c);
+    printf("\n%d\n",c=='y');
+    if (c=='y'){
+        grid=loadfile(&ROWS,&COLS);
+    }
+    else{
+        while (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) {
+            printf("Enter the number of rows (20 to 100): ");
+            scanf("%d", &ROWS);
+            printf("Enter the number of columns (20 to 100): ");
+            scanf("%d", &COLS);
+            if (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) printf("The rows and Column's can't exceed 100 and can't be bellow 20\n");
+        }
+        grid = initialize_grid(NULL, ROWS, COLS); //"grid" will store the current state of the sparse grid at any given instance.
     }
     //In case the grid becomes too large for a 1080p screen or too small for the instructions to be visible, change cell size:
     if (ROWS>60 || COLS>60) CELL_SIZE /= 2;
@@ -25,7 +40,6 @@ int main() {
 	int speed = 15;   //This will be the fps that we can change
     SetTargetFPS(speed); //Increase fps = more speed (+increasing speed might fix the multi-click problem)
 
-    SparseGrid *grid = initialize_grid(NULL, ROWS, COLS); //"grid" will store the current state of the sparse grid at any given instance.
     bool running = false; //Will store start/stop state
 
     while (!WindowShouldClose()) { //What they call a "Game Loop" - this will loop for every frame until the window is closed
@@ -58,9 +72,16 @@ int main() {
 		
         if (running) {
             SparseGrid *newGrid = evolve_generation(grid, ROWS, COLS); //Getting new state of grid
-            free_grid(grid, ROWS, COLS);    //Cleaning the grid of its previous state
+			root=frontins(root,grid);
+			count=(count+1)%5;
+            printf("%d",count);
+            //free_grid(grid, ROWS, COLS);    //Cleaning the grid of its previous state
             grid = newGrid;
         }
+
+		if (count==0){
+			root=enddel(root,ROWS,COLS);
+		}
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -82,6 +103,7 @@ int main() {
         EndDrawing();
     }
     //FINALLY, Cleanup:
+    savefile(grid,ROWS,COLS);
     free_grid(grid, ROWS, COLS);
     CloseWindow();
     return 0;
