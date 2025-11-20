@@ -3,6 +3,7 @@
 #include "Sparse.h" //Functions are used from Sparse.c - so remember to compile with that file. 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int main() {
     //If you want to change the grid layout, here's the place.
@@ -16,21 +17,24 @@ int main() {
     SparseGrid *grid;
     printf("Wish to load a previous grid: (y/n)");
     scanf("%c",&c);
-    printf("%c",c);
-    printf("\n%d\n",c=='y');
-    if (c=='y'){
-        grid=loadfile(&ROWS,&COLS);
-    }
-    else{
-        while (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) {
-            printf("Enter the number of rows (20 to 100): ");
-            scanf("%d", &ROWS);
-            printf("Enter the number of columns (20 to 100): ");
-            scanf("%d", &COLS);
-            if (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) printf("The rows and Column's can't exceed 100 and can't be bellow 20\n");
+        if (c=='y'){
+            grid=loadfile(&ROWS,&COLS);
         }
-        grid = initialize_grid(NULL, ROWS, COLS); //"grid" will store the current state of the sparse grid at any given instance.
-    }
+        else{
+            if (c=='n'){
+                while (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) {
+                    printf("Enter the number of rows (20 to 100): ");
+                    scanf("%d", &ROWS);
+                    printf("Enter the number of columns (20 to 100): ");
+                    scanf("%d", &COLS);
+                    if (ROWS < 20 || ROWS > 100 || COLS < 20 || COLS > 100) printf("The rows and Column's can't exceed 100 and can't be bellow 20\n");
+                }
+                grid = initialize_grid(NULL, ROWS, COLS); //"grid" will store the current state of the sparse grid at any given instance.
+            }
+            else{
+                return 1;
+            }
+        }
     //In case the grid becomes too large for a 1080p screen or too small for the instructions to be visible, change cell size:
     if (ROWS>60 || COLS>60) CELL_SIZE /= 2;
     else if (ROWS<35 || COLS<35) CELL_SIZE *= 2;
