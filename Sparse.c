@@ -227,7 +227,7 @@ NODE* frontdel(NODE *list, int ROWS, int COLS)
 NODE* enddel(NODE *list, int ROWS, int COLS)
   { NODE *temp, *prev;
     temp=list;
-	if(list==NULL)printf("Empty List\n");
+	if(list==NULL) return NULL;//printf("Empty List\n");
 	else if(list->next==NULL){list=NULL;
 	                          free(temp);
 							  }
@@ -238,7 +238,7 @@ NODE* enddel(NODE *list, int ROWS, int COLS)
 		}
 		prev->next=NULL;
 		free_grid(temp->info, ROWS, COLS);
-        printf("Uhhh\n");
+        //printf("Uhhh\n");
 		free(temp);
 	}
 	return list;
