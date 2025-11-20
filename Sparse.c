@@ -5,8 +5,6 @@
 //Changes:
 //Stop loops and static objects
 
-//added count implimentation
-
 
 int find(SparseGrid *grid, int row, int col,int totrows, int totcols){
 	if (col<0 || col>=totcols || row<0 || row>=totrows) return 0;
@@ -216,7 +214,7 @@ SparseGrid* evolve_generation(SparseGrid *current_grid, int rows, int cols) {
   
 NODE* frontdel(NODE *list, int ROWS, int COLS)
   { NODE *temp;
-	if(list==NULL)printf("Empty List");
+	if(list==NULL) return list;
 	else {
 		temp=list;
 		list=list->next;
@@ -229,7 +227,7 @@ NODE* frontdel(NODE *list, int ROWS, int COLS)
 NODE* enddel(NODE *list, int ROWS, int COLS)
   { NODE *temp, *prev;
     temp=list;
-	if(list==NULL)printf("Empty List");
+	if(list==NULL)printf("Empty List\n");
 	else if(list->next==NULL){list=NULL;
 	                          free(temp);
 							  }
@@ -240,6 +238,7 @@ NODE* enddel(NODE *list, int ROWS, int COLS)
 		}
 		prev->next=NULL;
 		free_grid(temp->info, ROWS, COLS);
+        printf("Uhhh\n");
 		free(temp);
 	}
 	return list;
@@ -259,8 +258,45 @@ SparseGrid* endsearch(NODE *list)
   }
   
  
+void savefile(SparseGrid* grid, int rows, int cols){
+    FILE *fp;
+    fp=fopen("save.txt","w");
+    fprintf(fp,"%d %d\n",rows,cols);
+    for (int i=0;i<rows;i++){
+        for (int j=0;j<cols;j++){
+            if (find(grid,i,j,rows,cols)) fprintf(fp,"*");
+            else fprintf(fp,".");
+        }
+        fprintf(fp,"\n");
+    }
+    fclose(fp);
+}
 
-
+SparseGrid* loadfile(int *rows, int *cols){
+    FILE *fp;
+    SparseGrid *save;
+    save=NULL;
+    fp=fopen("save.txt","r");
+    if (fp==NULL){
+        printf("No saves!");
+    }
+    else{
+        if (fscanf(fp,"%d %d",rows,cols)==2){
+            save=initialize_grid(NULL,*rows,*cols);
+            char c;
+            int x, y;
+            x=0;
+            y=0;
+            while ((c=fgetc(fp))!=EOF){
+                if (c=='*') add_cell(save,x,y,0,*rows,*cols);
+                x=(x+1)%(*cols);
+                if (c=='\n') y++;
+            }
+        }
+        fclose(fp);
+    }
+    return save;
+}
 
 /*
 int find_duplicate(SparseGrid* curr_grid, SparseGrid* prevgrid, int rows, int cols,int totrows, int totcols){
