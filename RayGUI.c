@@ -78,7 +78,7 @@ int main() {
             SparseGrid *newGrid = evolve_generation(grid, ROWS, COLS); //Getting new state of grid
 			root=frontins(root,grid);
 			count=(count+1)%5;
-            printf("%d",count);
+            //printf("%d",count);
             //free_grid(grid, ROWS, COLS);    //Cleaning the grid of its previous state
             grid = newGrid;
         }
@@ -112,3 +112,4 @@ int main() {
     CloseWindow();
     return 0;
 }
+
