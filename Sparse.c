@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Sparse.h" // Custom header file has all function defs and structures
-
+#include <string.h>
 //Changes:
 //Stop loops and static objects
 
@@ -227,7 +227,7 @@ NODE* frontdel(NODE *list, int ROWS, int COLS)
 NODE* enddel(NODE *list, int ROWS, int COLS)
   { NODE *temp, *prev;
     temp=list;
-	if(list==NULL)//printf("Empty List\n");
+	if(list==NULL)printf("Empty List\n");
 	else if(list->next==NULL){list=NULL;
 	                          free(temp);
 							  }
@@ -238,7 +238,7 @@ NODE* enddel(NODE *list, int ROWS, int COLS)
 		}
 		prev->next=NULL;
 		free_grid(temp->info, ROWS, COLS);
-        //printf("Uhhh\n");
+        printf("Uhhh\n");
 		free(temp);
 	}
 	return list;
@@ -287,14 +287,25 @@ SparseGrid* loadfile(int *rows, int *cols){
             int x, y;
             x=0;
             y=0;
-            while ((c=fgetc(fp))!=EOF){
-                if (c=='*') add_cell(save,x,y,0,*rows,*cols);
-                x=(x+1)%(*cols);
-                if (c=='\n') y++;
+            c=fgetc(fp);
+            printf("%c",c);
+            while (x<*rows){
+                c=fgetc(fp);
+                if (c=='*'){ 
+                    printf("%d %d\n",x,y);
+                    add_cell(save,x,y,0,*rows,*cols);
+                }
+                y=(y+1)%(*cols);
+                if (c=='\n'){ 
+                    y=0;
+                    x++;
+                }
             }
         }
+        printf("%d %d",*rows,*cols);
         fclose(fp);
     }
+    printf("done");
     return save;
 }
 
