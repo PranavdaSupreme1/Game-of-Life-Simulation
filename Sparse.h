@@ -33,6 +33,8 @@ int find(SparseGrid *grid, int row, int col, int totrows, int totcols); //Return
 SparseGrid* evolve_generation(SparseGrid *current_grid, int rows, int cols); //Calculate next frame using Conway's rules
 void free_grid(SparseGrid *grid, int rows, int cols); //Kills all cells, clears sparse grid.
 CellNode* find_cell(SparseGrid *grid, int row, int col ,int totrows, int totcols);
+int grids_equal(SparseGrid *a, SparseGrid *b, int rows, int cols);
+int pattern_repeats(NODE *history, SparseGrid *current, int rows, int cols);
 
 void savefile(SparseGrid* grid, int rows, int cols);
 SparseGrid* loadfile(int *rows, int *cols);
