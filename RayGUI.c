@@ -41,7 +41,7 @@ int main() {
     
     InitWindow(COLS * CELL_SIZE, ROWS * CELL_SIZE, "Game of Life in a Sparse Matrix");
     
-	int speed = 15;   //This will be the fps that we can change
+	int speed = 60;   //This will be the fps that we can change
     SetTargetFPS(speed); //Increase fps = more speed (+increasing speed might fix the multi-click problem)
 
     bool running = false; //Will store start/stop state
@@ -75,16 +75,25 @@ int main() {
 		}
 		
         if (running) {
-            SparseGrid *newGrid = evolve_generation(grid, ROWS, COLS); //Getting new state of grid
-			root=frontins(root,grid);
-			count=(count+1)%5;
-            //printf("%d",count);
-            //free_grid(grid, ROWS, COLS);    //Cleaning the grid of its previous state
-            grid = newGrid;
-        }
+			SparseGrid *newGrid = evolve_generation(grid, ROWS, COLS);
+			//Save current grid into history BEFORE replacing it
+			root = frontins(root, grid);
+			count = (count + 1) % 5;
 
-		if (count==0){
-			root=enddel(root,ROWS,COLS);
+			if (pattern_repeats(root, newGrid, ROWS, COLS)) { //will detect loop/static
+				//Clearing grid
+				free_grid(newGrid, ROWS, COLS);
+				newGrid = initialize_grid(NULL, ROWS, COLS);
+
+				//clear history so it does not instantly retrigger
+				while (root != NULL)
+					root = enddel(root, ROWS, COLS);
+			}
+			grid = newGrid;
+		}
+
+		if (count == 0) {
+			root = enddel(root, ROWS, COLS);
 		}
 
         BeginDrawing();
