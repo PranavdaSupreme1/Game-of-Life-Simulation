@@ -2,9 +2,39 @@
 #include <stdlib.h>
 #include "Sparse.h" // Custom header file has all function defs and structures
 #include <string.h>
-//Changes:
-//Stop loops and static objects
 
+int grids_equal(SparseGrid *a, SparseGrid *b, int rows, int cols) {
+    for (int r = 0; r < rows; r++) {
+        CellNode *ca = a->row[r];
+        CellNode *cb = b->row[r];
+
+        while (ca && cb) {
+            if (ca->col != cb->col)
+                return 0; // mismatch => they're not identical => continue the propagation
+            ca = ca->right;
+            cb = cb->right;
+        }
+
+        //If one ended earlier
+        if (ca != NULL || cb != NULL)
+            return 0;
+    }
+
+    return 1; //If two evolutions are identical
+}
+
+int pattern_repeats(NODE *history, SparseGrid *current, int rows, int cols) {
+    NODE *temp = history;
+
+    while (temp != NULL) {
+        if (grids_equal(temp->info, current, rows, cols)) {
+            return 1;   //=> loop or static pattern
+        }
+        temp = temp->next;
+    }
+
+    return 0;  //=> no match, continue evolution
+}
 
 int find(SparseGrid *grid, int row, int col,int totrows, int totcols){
 	if (col<0 || col>=totcols || row<0 || row>=totrows) return 0;
